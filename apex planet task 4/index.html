@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Internship Task Projects</title>
+  <style>
+    body {font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f7f9fa;}  
+    header {background: #2c3e50; color: white; padding: 15px; text-align: center;}
+    nav {background: #34495e; padding: 10px; text-align: center;}
+    nav a {color: white; margin: 0 15px; text-decoration: none; cursor: pointer;}
+    section {padding: 20px;}
+    footer {background: #2c3e50; color: white; text-align: center; padding: 10px;}
+    .task-container {max-width: 900px; margin: auto;}
+    .todo, .products {margin-top: 20px;}
+    ul {list-style: none; padding: 0;}
+
+    /* Card Styles */
+    li {background: #fff; margin: 10px 0; padding: 15px; border-radius: 8px; 
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1); display: flex; 
+        justify-content: space-between; align-items: center;}
+
+    input, button, select, textarea {padding: 8px; margin: 5px; width: 100%; box-sizing: border-box;}
+    button {background: #2c3e50; color: white; border: none; cursor: pointer; border-radius: 4px;}
+    button:hover {background: #1a252f;}
+
+    .delete-btn {background: transparent; border: none; cursor: pointer; font-size: 16px; color: red;}
+    .product-card {display: flex; justify-content: space-between; align-items: center;}
+    .product-name {font-weight: bold;}
+    .product-category {font-size: 12px; color: gray;}
+    .product-price {color: #27ae60; font-weight: bold;}
+
+    /* Hide all sections by default */
+    section {display: none;}
+    section.active {display: block;}
+
+    /* About cards */
+    .about-grid {
+      margin-top:20px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:15px;
+    }
+    .about-card {
+      background:#fff;
+      padding:15px;
+      border-radius:8px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1);
+      font-size:14px;
+      line-height:1.4em;
+    }
+    .about-card b {font-size:15px;}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>My Internship Task Projects</h1>
+  </header>
+  <nav>
+    <a onclick="showSection('about')">About</a>
+    <a onclick="showSection('projects')">Projects</a>
+    <a onclick="showSection('contact')">Contact</a>
+  </nav>
+
+  <section id="about" class="task-container active">
+    <h2>About Me</h2>
+    <p>Hello! I am <b>Rubana Ali</b>, currently working as an intern at <b>Apex Planet Software Pvt. Ltd.</b>.  
+    This portfolio showcases my completed internship tasks using HTML, CSS, and JavaScript.</p>
+
+    <div class="about-grid">
+      <div class="about-card">🎓 <b>Education:</b><br>B.Tech. in Electronics & Communication Engg. at SISTec GN (CGPA: 7.30)</div>
+      <div class="about-card">💻 <b>Skills:</b><br>Python, IoT, Firebase, MATLAB, C++, HTML, CSS, PCB Design</div>
+      <div class="about-card">🔧 <b>Technical:</b><br>ESP32, ESP8266, IR Sensors, Microcontrollers</div>
+      <div class="about-card">🚗 <b>Projects:</b><br>ParkSmart (Smart Parking System), Smart Street Light System</div>
+      <div class="about-card">🏆 <b>Achievement:</b><br>Smart India Hackathon 2023 Grand Finale</div>
+      <div class="about-card">📜 <b>Trainings:</b><br>PCB Designing & Python Programming at SISTec</div>
+      <div class="about-card">🌍 <b>Languages:</b><br>Hindi, English, Urdu</div>
+      <div class="about-card">✍️ <b>Hobbies:</b><br>Journaling and Problem Solving</div>
+    </div>
+  </section>
+
+  <section id="projects" class="task-container">
+    <h2>Projects</h2>
+
+    <div class="todo">
+      <h3>To-Do List with Local Storage</h3>
+      <input type="text" id="taskInput" placeholder="Enter a task">
+      <button onclick="addTask()">Add Task</button>
+      <ul id="taskList"></ul>
+    </div>
+
+    <div class="products">
+      <h3>Product Listing with Filter & Sort</h3>
+      <label>Filter by Category: 
+        <select id="categoryFilter" onchange="renderProducts()">
+          <option value="all">All</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Clothing">Clothing</option>
+          <option value="Books">Books</option>
+        </select>
+      </label>
+      <label>Sort by Price: 
+        <select id="sortFilter" onchange="renderProducts()">
+          <option value="asc">Low to High</option>
+          <option value="desc">High to Low</option>
+        </select>
+      </label>
+      <ul id="productList"></ul>
+    </div>
+  </section>
+
+  <section id="contact" class="task-container">
+    <h2>Contact Me</h2>
+    <form onsubmit="handleSubmit(event)">
+      <label for="name">Name:</label>
+      <input type="text" id="name" placeholder="Enter your name" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" placeholder="Enter your email" required>
+
+      <label for="message">Message:</label>
+      <textarea id="message" rows="5" placeholder="Enter your message" required></textarea>
+
+      <button type="submit">Submit</button>
+    </form>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Internship Task - Portfolio</p>
+  </footer>
+
+  <script>
+    // Navigation: Show only selected section
+    function showSection(sectionId) {
+      document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
+      document.getElementById(sectionId).classList.add("active");
+    }
+
+    // To-Do List with Local Storage
+    function loadTasks() {
+      let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      return tasks;
+    }
+    function saveTasks(tasks) {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+    function renderTasks() {
+      let taskList = document.getElementById("taskList");
+      taskList.innerHTML = "";
+      let tasks = loadTasks();
+      tasks.forEach((task, index) => {
+        let li = document.createElement("li");
+        li.innerHTML = `<span>${task}</span> <button class="delete-btn" onclick="deleteTask(${index})">❌</button>`;
+        taskList.appendChild(li);
+      });
+    }
+    function addTask() {
+      let input = document.getElementById("taskInput");
+      let tasks = loadTasks();
+      if (input.value.trim() !== "") {
+        tasks.push(input.value.trim());
+        saveTasks(tasks);
+        renderTasks();
+        input.value = "";
+      }
+    }
+    function deleteTask(index) {
+      let tasks = loadTasks();
+      tasks.splice(index, 1);
+      saveTasks(tasks);
+      renderTasks();
+    }
+    renderTasks();
+
+    // Product Listing with Filter & Sort
+    const products = [
+      {name: "Smartphone", category: "Electronics", price: 20000},
+      {name: "T-shirt", category: "Clothing", price: 500},
+      {name: "Laptop", category: "Electronics", price: 60000},
+      {name: "Novel", category: "Books", price: 300},
+      {name: "Jeans", category: "Clothing", price: 1200}
+    ];
+
+    function renderProducts() {
+      let category = document.getElementById("categoryFilter").value;
+      let sort = document.getElementById("sortFilter").value;
+      let filtered = products.filter(p => category === "all" || p.category === category);
+
+      if (sort === "asc") filtered.sort((a, b) => a.price - b.price);
+      else filtered.sort((a, b) => b.price - a.price);
+
+      let productList = document.getElementById("productList");
+      productList.innerHTML = "";
+      filtered.forEach(p => {
+        let li = document.createElement("li");
+        li.innerHTML = `
+          <div class="product-card">
+            <div>
+              <div class="product-name">${p.name}</div>
+              <div class="product-category">${p.category}</div>
+            </div>
+            <div class="product-price">₹${p.price}</div>
+          </div>
+        `;
+        productList.appendChild(li);
+      });
+    }
+    renderProducts();
+
+    // Contact form handler
+    function handleSubmit(event) {
+      event.preventDefault();
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const message = document.getElementById("message").value;
+      alert(`Thank you ${name}! Your message has been received:\n\n${message}\n\nWe will contact you at ${email}.`);
+    }
+  </script>
+</body>
+</html>
